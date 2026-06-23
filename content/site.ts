@@ -13,16 +13,16 @@ export const siteConfig = {
     backgroundMusic:"/background_music/Dalangin by Earl Agustin (Lyrics).mp3"
   },
   googleAPI:{
-    messageForm: "https://docs.google.com/forms/d/e/1FAIpQLSfXvyM4HX_WzeqhNBsVItLE3vxaX-jxfyQcUzlmIYemI6seEA/formResponse",   //done
-    message: "https://script.google.com/macros/s/AKfycbyhXfGvSAOcfVjsGTCFSERVHIBT8YSAF6UWufUSZVFIsO-DmRCfP4cu8BGFC9_kGd2Z/exec",  //done
-    guestList: "https://script.google.com/macros/s/AKfycbweU0eMuEW3ZNX9BJq0DTNE316uD9aOJXTwi7Jqo-fyRbcJ4oXmC_bl4xn-9yysI50/exec",  //done
-    guestRequest: "https://script.google.com/macros/s/AKfycbwGjD_2Bz-m3PRk5Dqz7w6N5iIs0WyrjwTGSt8-ADpbgySvQRPtYMX2ADQ4Rus37Qyl/exec",   //done
-    entourage: "https://script.google.com/macros/s/AKfycbyd0hWgNr8CkleXsPlH_qhJpm70QRM2Y86-5536jqfBgh8uR-t3LKVSJWKhlgb45mZM/exec",  //done
-    sponsors: "https://script.google.com/macros/s/AKfycbxq-e_jonY_uVE22DLlOoQoRdsN8HjCc47LtavCpRkoXQCjHb0iJa_4bf2KD6wMPucW/exec",  //done 
-    proposalResponses: "https://script.google.com/macros/s/AKfycbyd0hWgNr8CkleXsPlH_qhJpm70QRM2Y86-5536jqfBgh8uR-t3LKVSJWKhlgb45mZM/exec", // uses entourage script with action: proposal
-    weddingDetails: "https://script.google.com/macros/s/AKfycbwqB5jIWv_-VZbX4jCGK6lEH6lEHqaSqrVcUaBSP-SWNtnPy36VmDl0xT-ocKPrWSNA/exec",   //done
+    messageForm: "https://docs.google.com/forms/d/e/1FAIpQLScwEUSUyxUUWQDHIW738kciHPBA_lRMEas0X4rN44dFuv6PmQ/formResponse",   //done
+    message: "https://script.google.com/macros/s/AKfycbzax4GyDyuGxF6Fil8cqOf_NewF3nDa9DB3ohjaLZtl_72Y-JoTMPSVD0xtyFAGwEde8w/exec",  //done
+    guestList: "https://script.google.com/macros/s/AKfycbwHCI36g4hLkXU2j5uBM1j4bZL0xbj-G05TDnpW8wauqIbWLBM0Ux68p9z8dO1lO-KUgA/exec",  //done
+    guestRequest: "https://script.google.com/macros/s/AKfycbzY8I6C6q-eeSudCzn4nY5p05uI3f6WGhLX3ac86kUymFdan9llMZP6AJ9XrEx9Inl0Rw/exec",   //done
+    entourage: "https://script.google.com/macros/s/AKfycbyS5qPMqQK1P84VkKAkau4uZYq5Zg8jn3bs8uEtXoJiNb8t9-FjjS8p9qjSI_M2iBLISQ/exec",  //done
+    sponsors: "https://script.google.com/macros/s/AKfycbz2eZNkWej2bIxuNrABblq9s229LC7mdoGFHloMFFekvm6CwgilOb3_Bj56afR2Yi9VFg/exec",  //done 
+    proposalResponses: "https://script.google.com/macros/s/AKfycbzgs8_Ima4AnkkEGskBOBf3nk290mmzKTeVSYRIikfEalpmdcrElYR1mUX2Wt-JSZEQYA/exec", // uses entourage script with action: proposal
+    weddingDetails: "https://script.google.com/macros/s/AKfycbzv4ZrGK9yO6fLZQMhxaVnZ2N6on2tRbuPqxqit5wa-ywsXnuySZbhAkHRcPeHQceqOIw/exec",   //done
 ////google share 
-    googleShare: "https://docs.google.com/spreadsheets/d/1OXyjq_SnyzPwIT1tRKo4Sjf_00sexatbmFA9DdJ-bR4/edit?usp=sharing", 
+    googleShare: "https://docs.google.com/spreadsheets/d/1MXqoVM4S4hxyaAu8SR4SrPD7xIbWH_1nbufJiMah26s/edit?usp=sharing", 
   },
   wedding: {
     date: "October 4, 2026",

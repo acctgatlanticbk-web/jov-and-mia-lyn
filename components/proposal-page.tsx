@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect, useCallback, useRef, useLayoutEffect, useMemo, type CSSProperties } from "react"
+import { useState, useEffect, useCallback, useMemo, useRef, useLayoutEffect, type CSSProperties } from "react"
 import Link from "next/link"
 import Image from "next/image"
 import { motion, AnimatePresence } from "motion/react"
@@ -9,34 +9,17 @@ import {
   Check,
   X,
   Sparkles,
-  MapPin,
 } from "lucide-react"
 import { useSiteConfig } from "@/hooks/use-site-config"
 import { LoadingScreen } from "@/components/loader/LoadingScreen"
 import { getRoleSingular } from "@/lib/proposal-roles"
+import { parseWeddingDate } from "@/lib/wedding-date"
+import { siteConfig as defaultSiteConfig } from "@/content/site"
 import type { ProposalRole, ProposalResponse } from "@/lib/proposal-types"
 
 const TEXT = "var(--color-motif-medium)"
 const TEXT_DEEP = "var(--color-motif-medium)"
 const ACCENT = "var(--color-motif-accent)"
-
-const smg: CSSProperties = {
-  fontFamily: "'SortsMillGoudy', Georgia, serif",
-  fontStyle: "normal",
-}
-const hps: CSSProperties = {
-  fontFamily: "'HelloParisSans', serif",
-}
-
-const HERO_BACKGROUND = `linear-gradient(
-  165deg,
-  var(--color-motif-cream) 0%,
-  color-mix(in srgb, var(--color-motif-cream) 88%, white) 22%,
-  #FFFFFF 48%,
-  color-mix(in srgb, var(--color-motif-soft) 16%, transparent) 74%,
-  color-mix(in srgb, var(--color-motif-yellow) 12%, transparent) 100%
-)`
-
 const PALETTE_COLORS = [
   "var(--color-motif-cream)",
   "var(--color-motif-silver)",
@@ -45,6 +28,40 @@ const PALETTE_COLORS = [
   "var(--color-motif-yellow)",
   "var(--color-motif-medium)",
 ] as const
+
+const PROPOSAL_BACKGROUND = `linear-gradient(
+  165deg,
+  var(--color-motif-cream) 0%,
+  color-mix(in srgb, var(--color-motif-cream) 88%, white) 22%,
+  #FFFFFF 48%,
+  color-mix(in srgb, var(--color-motif-soft) 16%, transparent) 74%,
+  color-mix(in srgb, var(--color-motif-yellow) 12%, transparent) 100%
+)`
+
+const CORNER_DECO_CLASS =
+  "block h-auto w-auto max-w-[130px] sm:max-w-[160px] md:max-w-[210px] lg:max-w-[260px]"
+
+const smg: CSSProperties = {
+  fontFamily: "'SortsMillGoudy', Georgia, serif",
+  fontStyle: "normal",
+}
+const hps: CSSProperties = {
+  fontFamily: "'HelloParisSans', serif",
+}
+const proposalLabel: CSSProperties = {
+  fontFamily: "'Cinzel', 'Times New Roman', serif",
+  fontStyle: "normal",
+}
+const proposalTitle: CSSProperties = {
+  fontFamily: "'Cormorant Garamond', Georgia, 'Times New Roman', serif",
+  fontStyle: "italic",
+  fontWeight: 500,
+}
+const proposalHonor: CSSProperties = {
+  fontFamily: "'Cormorant Garamond', Georgia, 'Times New Roman', serif",
+  fontStyle: "italic",
+  fontWeight: 500,
+}
 
 interface AmbientOrb {
   id: number
@@ -117,7 +134,7 @@ function DottedRule({ compact = false }: { compact?: boolean }) {
   )
 }
 
-function ProposalHeroBackdrop({ decorVisible }: { decorVisible: boolean }) {
+function ProposalBackdrop({ decorVisible }: { decorVisible: boolean }) {
   const ambientOrbs = useMemo(() => createAmbientOrbs(5), [])
   const sparkParticles = useMemo(() => createSparkParticles(16), [])
   const decorClass = decorVisible ? " decor-visible" : ""
@@ -168,23 +185,38 @@ function ProposalHeroBackdrop({ decorVisible }: { decorVisible: boolean }) {
         ))}
       </div>
 
-      <div className={`decor-corner decor-top-left pointer-events-none absolute left-0 top-0 z-[2]${decorClass}`}>
+      <div
+        className={`decor-corner decor-top-left pointer-events-none absolute left-0 top-0 z-[2]${decorClass}`}
+        style={decorVisible ? undefined : { opacity: 0, visibility: "hidden" }}
+      >
         {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img src="/decoration/decoration/left-top-decoration.png" alt="" className="block h-auto w-auto max-w-[130px] sm:max-w-[160px] md:max-w-[210px] lg:max-w-[260px]" />
+        <img src="/decoration/decoration/left-top-decoration.png" alt="" className={CORNER_DECO_CLASS} />
       </div>
-      <div className={`decor-corner decor-top-right pointer-events-none absolute right-0 top-0 z-[2]${decorClass}`}>
+      <div
+        className={`decor-corner decor-top-right pointer-events-none absolute right-0 top-0 z-[2]${decorClass}`}
+        style={decorVisible ? undefined : { opacity: 0, visibility: "hidden" }}
+      >
         {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img src="/decoration/decoration/right-top-decoration.png" alt="" className="block h-auto w-auto max-w-[130px] sm:max-w-[160px] md:max-w-[210px] lg:max-w-[260px]" />
+        <img src="/decoration/decoration/right-top-decoration.png" alt="" className={CORNER_DECO_CLASS} />
       </div>
-      <div className={`decor-corner decor-bottom-left pointer-events-none absolute bottom-0 left-0 z-[2]${decorClass}`}>
+      <div
+        className={`decor-corner decor-bottom-left pointer-events-none absolute bottom-0 left-0 z-[2]${decorClass}`}
+        style={decorVisible ? undefined : { opacity: 0, visibility: "hidden" }}
+      >
         {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img src="/decoration/decoration/left-bottom-decoration.png" alt="" className="block h-auto w-auto max-w-[130px] sm:max-w-[160px] md:max-w-[210px] lg:max-w-[260px]" />
+        <img src="/decoration/decoration/left-bottom-decoration.png" alt="" className={CORNER_DECO_CLASS} />
       </div>
-      <div className={`decor-corner decor-bottom-right pointer-events-none absolute bottom-0 right-0 z-[2]${decorClass}`}>
+      <div
+        className={`decor-corner decor-bottom-right pointer-events-none absolute bottom-0 right-0 z-[2]${decorClass}`}
+        style={decorVisible ? undefined : { opacity: 0, visibility: "hidden" }}
+      >
         {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img src="/decoration/decoration/right-bottom-decoration.png" alt="" className="block h-auto w-auto max-w-[130px] sm:max-w-[160px] md:max-w-[210px] lg:max-w-[260px]" />
+        <img src="/decoration/decoration/right-bottom-decoration.png" alt="" className={CORNER_DECO_CLASS} />
       </div>
-      <div className={`decor-bottom pointer-events-none absolute bottom-0 left-0 right-0 z-[3] md:hidden${decorClass}`}>
+      <div
+        className={`decor-bottom pointer-events-none absolute bottom-0 left-0 right-0 z-[3] md:hidden${decorClass}`}
+        style={decorVisible ? undefined : { opacity: 0, visibility: "hidden" }}
+      >
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img src="/decoration/decoration/bottom-center-decoration.png" alt="" className="block h-auto w-full" />
       </div>
@@ -192,26 +224,86 @@ function ProposalHeroBackdrop({ decorVisible }: { decorVisible: boolean }) {
   )
 }
 
-function CoupleNamesHero() {
+function ProposalIntroSection() {
   const siteConfig = useSiteConfig()
+
   const groomNickname = siteConfig.couple.groomNickname || siteConfig.couple.groom
   const brideNickname = siteConfig.couple.brideNickname || siteConfig.couple.bride
+  const ceremonyDate =
+    siteConfig.ceremony.date ?? siteConfig.wedding.date ?? defaultSiteConfig.ceremony.date
+  const parsedDate = useMemo(
+    () => parseWeddingDate(ceremonyDate, parseWeddingDate(defaultSiteConfig.ceremony.date)),
+    [ceremonyDate],
+  )
+  const ceremonyDay = (
+    siteConfig.ceremony.day ?? parsedDate.dayOfWeek ?? defaultSiteConfig.ceremony.day
+  ).toUpperCase()
+  const ceremonyTime =
+    siteConfig.ceremony.time ?? siteConfig.wedding.time ?? defaultSiteConfig.ceremony.time
+  const { month, day: dateNum, year } = parsedDate
 
   return (
-    <div className="relative z-10 flex w-full flex-col items-center leading-none">
-      <h1
-        className="w-full leading-none"
-        style={{
-          ...hps,
-          fontSize: "clamp(52px, 14vw, 72px)",
-          color: ACCENT,
-          fontWeight: 400,
-          letterSpacing: "0.04em",
-          textTransform: "capitalize",
-        }}
-      >
-        {groomNickname}
-      </h1>
+    <div
+      className="mx-auto w-full max-w-[310px] space-y-4 text-center md:max-w-[520px] md:space-y-5"
+      style={{ color: TEXT, WebkitFontSmoothing: "antialiased" }}
+    >
+      {/* SAVE THE DATE — arch */}
+      <div className="mb-1 mt-6 w-full sm:mt-8 md:mt-10">
+        <div className="-translate-y-2 md:-translate-y-3">
+          <svg viewBox="0 0 300 100" className="mx-auto h-[66px] w-full md:hidden" aria-hidden overflow="visible">
+            <defs>
+              <path id="proposalArcMob" d="M 6 80 A 178 178 0 0 1 294 80" fill="none" />
+            </defs>
+            <text fill={TEXT_DEEP} style={{ ...smg, fontSize: "24px", letterSpacing: "0.32em" }}>
+              <textPath href="#proposalArcMob" startOffset="50%" textAnchor="middle">
+                SAVE THE DATE
+              </textPath>
+            </text>
+          </svg>
+          <svg viewBox="0 0 480 130" className="mx-auto hidden h-[90px] w-full md:block" aria-hidden overflow="visible">
+            <defs>
+              <path id="proposalArcDsk" d="M 10 104 A 280 280 0 0 1 470 104" fill="none" />
+            </defs>
+            <text fill={TEXT_DEEP} style={{ ...smg, fontSize: "36px", letterSpacing: "0.3em" }}>
+              <textPath href="#proposalArcDsk" startOffset="50%" textAnchor="middle">
+                SAVE THE DATE
+              </textPath>
+            </text>
+          </svg>
+        </div>
+      </div>
+
+      <div className="flex w-full flex-col items-center gap-2 md:gap-2.5">
+        <div className="flex w-full max-w-[280px] items-center justify-center gap-2 md:max-w-[320px]">
+          <DottedRule compact />
+          <p className="shrink-0 text-[10px] tracking-[0.32em] uppercase md:text-[12px]" style={{ ...smg, color: TEXT, opacity: 0.88 }}>
+            With joy in our hearts
+          </p>
+          <DottedRule compact />
+        </div>
+        <p className="max-w-[280px] text-[13px] leading-[1.55] md:max-w-none md:text-[17px] md:leading-[1.6]" style={{ ...smg, color: TEXT, fontStyle: "italic" }}>
+          we ask you to stand with us
+          <br className="md:hidden" />
+          {" "}at the wedding of
+        </p>
+      </div>
+
+      {/* Groom name */}
+      <div className="mt-2 w-full md:mt-3">
+        <h1
+          className="w-full leading-none"
+          style={{
+            ...hps,
+            fontSize: "clamp(52px, 14vw, 72px)",
+            color: ACCENT,
+            fontWeight: 400,
+            letterSpacing: "0.04em",
+            textTransform: "capitalize",
+          }}
+        >
+          {groomNickname}
+        </h1>
+      </div>
 
       <div className="my-2 flex w-full items-center justify-center gap-2 md:my-3">
         <DottedRule compact />
@@ -221,83 +313,88 @@ function CoupleNamesHero() {
         <DottedRule compact />
       </div>
 
-      <h1
-        className="w-full leading-none"
-        style={{
-          ...hps,
-          fontSize: "clamp(52px, 14vw, 72px)",
-          color: ACCENT,
-          fontWeight: 400,
-          letterSpacing: "0.04em",
-          textTransform: "capitalize",
-        }}
-      >
-        {brideNickname}
-      </h1>
-    </div>
-  )
-}
-
-function ProposalIntroSection({ venue }: { venue: string }) {
-  return (
-    <div
-      className="mx-auto w-full max-w-[310px] space-y-4 text-center md:max-w-[520px] md:space-y-5"
-      style={{ color: TEXT, WebkitFontSmoothing: "antialiased" }}
-    >
-      <div className="mb-1 w-full">
-        <svg viewBox="0 0 300 100" className="mx-auto h-[66px] w-full md:hidden" aria-hidden overflow="visible">
-          <defs>
-            <path id="proposalArcMob" d="M 6 80 A 178 178 0 0 1 294 80" fill="none" />
-          </defs>
-          <text fill={TEXT_DEEP} style={{ ...smg, fontSize: "24px", letterSpacing: "0.32em" }}>
-            <textPath href="#proposalArcMob" startOffset="50%" textAnchor="middle">
-              SAVE THE DATE
-            </textPath>
-          </text>
-        </svg>
-        <svg viewBox="0 0 480 130" className="mx-auto hidden h-[90px] w-full md:block" aria-hidden overflow="visible">
-          <defs>
-            <path id="proposalArcDsk" d="M 10 104 A 280 280 0 0 1 470 104" fill="none" />
-          </defs>
-          <text fill={TEXT_DEEP} style={{ ...smg, fontSize: "36px", letterSpacing: "0.3em" }}>
-            <textPath href="#proposalArcDsk" startOffset="50%" textAnchor="middle">
-              SAVE THE DATE
-            </textPath>
-          </text>
-        </svg>
-      </div>
-
-      <div className="flex w-full flex-col items-center gap-2">
-        <div className="flex w-full max-w-[280px] items-center justify-center gap-2 md:max-w-[320px]">
-          <DottedRule compact />
-          <p
-            className="shrink-0 text-[10px] tracking-[0.28em] uppercase md:text-[12px]"
-            style={{ ...smg, color: TEXT, opacity: 0.88 }}
-          >
-            With joy in our hearts
-          </p>
-          <DottedRule compact />
-        </div>
-        <p
-          className="text-[12px] leading-[1.65] md:text-[14px] md:leading-[1.75]"
-          style={{ ...smg, color: TEXT }}
+      {/* Bride name */}
+      <div className="w-full">
+        <h1
+          className="w-full leading-none"
+          style={{
+            ...hps,
+            fontSize: "clamp(52px, 14vw, 72px)",
+            color: ACCENT,
+            fontWeight: 400,
+            letterSpacing: "0.04em",
+            textTransform: "capitalize",
+          }}
         >
-          With the grace of God and the blessings
-          <br />
-          of our families we ask of you
-        </p>
+          {brideNickname}
+        </h1>
       </div>
 
-      <CoupleNamesHero />
-
-      <p
-        className="text-sm tracking-[0.18em] uppercase md:text-base md:tracking-[0.22em]"
-        style={{ ...smg, color: TEXT_DEEP, fontWeight: 600 }}
-      >
-        Are Getting Married
+      <p className="w-full text-[12px] leading-[1.65] md:text-[14px] md:leading-[1.75]" style={{ ...smg, color: TEXT }}>
+        Together with their families
+        <br />
+        invite you to their wedding celebration
       </p>
 
-      <div className="flex flex-col items-center">
+      {/* Date block */}
+      <div className="w-full">
+        <div
+          className="mx-auto grid w-full max-w-[260px] gap-y-0 md:max-w-[340px]"
+          style={{
+            gridTemplateColumns: "1fr auto 1fr",
+            gridTemplateRows: "auto auto auto",
+          }}
+        >
+          <div
+            className="col-start-2 row-start-1 border-x border-t border-dotted px-1.5 pb-0 pt-0.5 text-center md:px-2"
+            style={{ borderColor: TEXT_DEEP }}
+          >
+            <span className="text-[10px] font-bold tracking-[0.18em] uppercase md:text-[12px]" style={{ ...smg, color: TEXT }}>
+              {month}
+            </span>
+          </div>
+
+          <div className="col-start-1 row-start-2 flex flex-col justify-center gap-[2px] px-0.5 md:px-1">
+            <div className="border-t border-dotted" style={{ borderColor: TEXT_DEEP }} />
+            <span className="text-center text-[10px] tracking-[0.14em] uppercase md:text-[12px]" style={{ ...smg, color: TEXT }}>
+              {ceremonyDay}
+            </span>
+            <div className="border-t border-dotted" style={{ borderColor: TEXT_DEEP }} />
+          </div>
+
+          <div
+            className="col-start-2 row-start-2 flex items-center justify-center border-x border-dotted px-1 pb-0 pt-0 md:px-1.5"
+            style={{ borderColor: TEXT_DEEP }}
+          >
+            <span
+              className="leading-[0.85]"
+              style={{ ...hps, fontSize: "clamp(52px, 14vw, 68px)", color: ACCENT }}
+            >
+              {dateNum}
+            </span>
+          </div>
+
+          <div className="col-start-3 row-start-2 flex flex-col justify-center gap-[2px] px-0.5 md:px-1">
+            <div className="border-t border-dotted" style={{ borderColor: TEXT_DEEP }} />
+            <span className="whitespace-nowrap text-center text-[10px] tracking-[0.12em] uppercase md:text-[12px]" style={{ ...smg, color: TEXT }}>
+              At {ceremonyTime}
+            </span>
+            <div className="border-t border-dotted" style={{ borderColor: TEXT_DEEP }} />
+          </div>
+
+          <div
+            className="col-start-2 row-start-3 border-x border-b border-dotted px-1.5 pb-0.5 pt-0 text-center md:px-2"
+            style={{ borderColor: TEXT_DEEP }}
+          >
+            <span className="text-[14px] font-bold leading-none tracking-[0.12em] md:text-[18px]" style={{ ...smg, color: TEXT_DEEP, fontWeight: 700 }}>
+              {year}
+            </span>
+          </div>
+        </div>
+      </div>
+
+      {/* Venue */}
+      <div className="flex w-full flex-col items-center">
         <div className="flex items-center justify-center gap-1.5 md:gap-2">
           <DottedRule compact />
           <span className="text-[13px] md:text-[15px]" style={{ ...smg, color: TEXT }}>
@@ -305,14 +402,8 @@ function ProposalIntroSection({ venue }: { venue: string }) {
           </span>
           <DottedRule compact />
         </div>
-        <p
-          className="mt-2 flex items-center justify-center gap-2 text-[13px] leading-snug md:mt-2.5 md:text-[15px]"
-          style={{ ...smg, color: TEXT }}
-        >
-          <MapPin className="h-4 w-4 shrink-0" style={{ color: ACCENT }} />
-          <span className="text-pretty" title={venue}>
-            {venue}
-          </span>
+        <p className="mt-2 text-[13px] leading-snug md:mt-2.5 md:text-[15px]" style={{ ...smg, color: TEXT }}>
+          {siteConfig.ceremony.location}
         </p>
       </div>
     </div>
@@ -320,13 +411,13 @@ function ProposalIntroSection({ venue }: { venue: string }) {
 }
 
 const cardClass =
-  "relative w-full overflow-hidden rounded-2xl sm:rounded-3xl border border-motif-medium/20 bg-motif-cream/90 p-5 text-center shadow-[0_16px_48px_rgba(42,37,32,0.08)] backdrop-blur-sm sm:p-10 md:p-12 lg:p-14"
+  "relative w-full overflow-hidden rounded-2xl border border-motif-deep/15 bg-motif-cream/90 p-5 text-center shadow-[0_16px_48px_rgba(42,37,32,0.08)] backdrop-blur-sm sm:rounded-3xl sm:p-10 md:p-12 lg:p-14"
 
 const primaryBtnClass =
-  "cursor-pointer rounded-lg border border-motif-accent bg-motif-accent px-5 py-3 text-[10px] font-semibold tracking-[0.22em] text-white uppercase shadow-[0_10px_24px_color-mix(in_srgb,var(--color-motif-accent)_28%,transparent)] transition-all duration-300 hover:-translate-y-0.5 hover:bg-motif-deep hover:border-motif-deep disabled:opacity-50 sm:px-7 sm:py-3.5 sm:text-[11px] sm:tracking-[0.26em] md:px-8 md:py-4"
+  "cursor-pointer rounded-lg px-5 py-3 text-[0.65rem] font-semibold uppercase tracking-[0.28em] text-white shadow-[0_10px_24px_color-mix(in_srgb,var(--color-motif-accent)_28%,transparent)] transition-all duration-300 hover:-translate-y-0.5 disabled:opacity-50 sm:px-7 sm:py-3.5 sm:text-xs sm:tracking-[0.32em] md:px-8 md:py-4"
 
 const secondaryBtnClass =
-  "cursor-pointer rounded-lg border border-motif-medium/35 bg-white/70 px-5 py-3 text-[10px] font-semibold tracking-[0.22em] uppercase shadow-sm transition-all duration-300 hover:border-motif-accent/50 hover:bg-motif-soft/20 sm:px-7 sm:py-3.5 sm:text-[11px] sm:tracking-[0.26em] md:px-8 md:py-4"
+  "cursor-pointer rounded-lg border border-motif-deep/25 bg-motif-cream/80 px-5 py-3 text-[0.65rem] font-semibold uppercase tracking-[0.28em] transition-all duration-300 hover:border-motif-accent/50 hover:bg-motif-silver/20 sm:px-7 sm:py-3.5 sm:text-xs sm:tracking-[0.32em] md:px-8 md:py-4"
 
 function ProposalAskSection({
   roleSingular,
@@ -362,7 +453,7 @@ function ProposalAskSection({
   return (
     <div className="relative mx-auto mt-0 w-full sm:mt-10">
       {coAttendants.length > 0 && (
-        <div className="mx-auto mb-8 max-w-lg space-y-3 rounded-xl border border-motif-medium/20 bg-white/60 px-5 py-4 text-center sm:px-6 sm:py-5">
+        <div className="mx-auto mb-8 max-w-lg space-y-3 rounded-xl border border-motif-deep/15 bg-white/50 px-5 py-4 text-center sm:px-6 sm:py-5">
           <div
             className="flex items-center justify-center gap-2 text-[10px] font-semibold tracking-[0.2em] uppercase sm:text-xs"
             style={{ ...smg, color: ACCENT }}
@@ -374,17 +465,17 @@ function ProposalAskSection({
             {coAttendants.map((name, idx) => (
               <span
                 key={idx}
-                className="rounded-full border border-motif-medium/25 bg-motif-soft/30 px-3 py-1 text-xs font-medium shadow-sm"
-                style={{ ...smg, color: TEXT_DEEP }}
+                className="rounded-full border border-motif-deep/20 bg-motif-cream/80 px-3 py-1 text-xs shadow-sm"
+                style={{ ...smg, color: TEXT }}
               >
-                ✨ {name}
+                {name}
               </span>
             ))}
           </div>
         </div>
       )}
 
-      <div className="relative pt-0 sm:border-t sm:border-motif-medium/15 sm:pt-10">
+      <div className="relative pt-0 sm:border-t sm:border-motif-deep/10 sm:pt-10">
         <span
           aria-hidden
           className="pointer-events-none absolute right-0 bottom-8 h-56 w-56 rounded-full opacity-35 blur-3xl sm:bottom-12 sm:h-72 sm:w-72"
@@ -400,20 +491,19 @@ function ProposalAskSection({
             <div className="relative z-10 flex min-w-0 flex-1 flex-col items-start text-left">
               <div ref={questionRef} className="w-full">
                 <p
-                  className="text-[10px] tracking-[0.28em] uppercase sm:text-xs sm:tracking-[0.32em]"
-                  style={{ ...smg, color: TEXT, fontWeight: 600 }}
+                  className="text-[10px] tracking-[0.32em] uppercase md:text-[12px]"
+                  style={{ ...proposalLabel, color: TEXT, opacity: 0.88 }}
                 >
                   Will You Be Our
                 </p>
 
                 <h2
-                  className="mt-2 leading-[0.92] sm:mt-3"
+                  className="mt-2 leading-[0.95] sm:mt-3"
                   style={{
-                    ...hps,
-                    fontSize: "clamp(2.75rem, 11vw, 4.5rem)",
+                    ...proposalTitle,
+                    fontSize: "clamp(2.75rem, 11vw, 5rem)",
                     color: ACCENT,
-                    fontWeight: 400,
-                    letterSpacing: "0.04em",
+                    letterSpacing: "0.02em",
                     textTransform: "capitalize",
                   }}
                 >
@@ -421,16 +511,19 @@ function ProposalAskSection({
                 </h2>
 
                 <p
-                  className="mt-3 max-w-lg pr-1 text-sm leading-[1.65] italic sm:mt-6 sm:pr-0 sm:text-base sm:leading-[1.75] md:mt-7 md:text-lg md:leading-relaxed"
-                  style={{ ...smg, color: TEXT }}
+                  className="mt-3 max-w-lg pr-1 text-sm leading-[1.65] sm:mt-6 sm:pr-0 sm:text-base sm:leading-[1.75] md:mt-7 md:text-lg md:leading-relaxed"
+                  style={{ ...smg, color: TEXT, fontStyle: "italic" }}
                 >
                   &ldquo;{description}&rdquo;
                 </p>
               </div>
 
-              {/* Desktop / tablet buttons */}
               <div className="mt-8 hidden w-full flex-row gap-3 sm:mt-10 sm:flex sm:max-w-md md:mt-12">
-                <button onClick={onYes} className={`${primaryBtnClass} min-w-0 flex-1`}>
+                <button
+                  onClick={onYes}
+                  className={`${primaryBtnClass} min-w-0 flex-1`}
+                  style={{ ...smg, backgroundColor: ACCENT }}
+                >
                   Yes, I&apos;d Be Honored
                 </button>
                 <button
@@ -461,7 +554,7 @@ function ProposalAskSection({
                   src="/attireGuide/character.png"
                   alt=""
                   fill
-                  className="object-contain object-[right_center] drop-shadow-[0_20px_48px_rgba(15,28,63,0.14)] sm:object-bottom"
+                  className="object-contain object-[right_center] drop-shadow-[0_20px_48px_rgba(42,37,32,0.12)] sm:object-bottom"
                   sizes="(max-width: 640px) 38vw, 300px"
                   priority
                 />
@@ -469,18 +562,18 @@ function ProposalAskSection({
             </motion.div>
           </div>
 
-          {/* Mobile buttons — full width below text + image */}
           <div className="flex w-full flex-row gap-2.5 sm:hidden">
             <button
               onClick={onYes}
-              className={`${primaryBtnClass} min-h-11 min-w-0 flex-1 px-4 py-3.5 text-[10px] tracking-[0.12em]`}
+              className={`${primaryBtnClass} min-h-11 min-w-0 flex-1 px-4 py-3.5`}
+              style={{ ...smg, backgroundColor: ACCENT }}
             >
               Yes
             </button>
             <button
               onClick={onNo}
-              className={`${secondaryBtnClass} min-h-11 min-w-0 flex-1 px-4 py-3.5 text-[10px] tracking-[0.12em]`}
-              style={{ color: TEXT }}
+              className={`${secondaryBtnClass} min-h-11 min-w-0 flex-1 px-4 py-3.5`}
+              style={{ ...smg, color: TEXT }}
             >
               Decline
             </button>
@@ -503,7 +596,6 @@ interface ProposalPageProps {
 }
 
 export function ProposalPage({ role }: ProposalPageProps) {
-  const siteConfig = useSiteConfig()
   const [isReady, setIsReady] = useState(false)
   const [flowState, setFlowState] = useState<ProposalFlowState>("question")
   const [preferredName, setPreferredName] = useState("")
@@ -579,22 +671,22 @@ export function ProposalPage({ role }: ProposalPageProps) {
   }
 
   const roleSingular = getRoleSingular(role.title)
-  const venue = siteConfig.ceremony.location
 
   return (
     <div
       className="relative isolate flex min-h-screen select-none flex-col items-center justify-center overflow-hidden px-3 py-8 sm:px-6 sm:py-16"
-      style={{ background: "var(--color-motif-cream)", ...smg, color: TEXT }}
+      style={{ background: "var(--color-motif-cream)" }}
     >
       {!isReady && <LoadingScreen onComplete={handleLoadingComplete} />}
 
-      <ProposalHeroBackdrop decorVisible={isReady} />
+      <ProposalBackdrop decorVisible={isReady} />
 
       <motion.div
         initial={{ opacity: 0, y: 24 }}
         animate={isReady ? { opacity: 1, y: 0 } : { opacity: 0, y: 24 }}
         transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
         className="relative z-10 mx-auto w-full max-w-2xl lg:max-w-4xl"
+        style={{ ...smg, color: TEXT }}
       >
         <AnimatePresence mode="wait">
           {flowState === "question" && (
@@ -606,21 +698,18 @@ export function ProposalPage({ role }: ProposalPageProps) {
               transition={{ duration: 0.6, ease: "easeOut" }}
               className={cardClass}
             >
-              <div className="relative z-10 w-full space-y-3 pt-1 sm:space-y-8 sm:pt-2">
-                <ProposalIntroSection venue={venue} />
+              <div className="relative z-10 w-full space-y-4 pt-1 sm:space-y-8 sm:pt-2">
+                <ProposalIntroSection />
 
-                <div
-                  className="mx-auto max-w-xl space-y-3 border-t border-motif-medium/15 px-1 pt-4 pb-0 text-[13px] leading-[1.75] italic sm:space-y-5 sm:px-0 sm:border-y sm:py-8 sm:text-base sm:leading-[1.8]"
-                  style={{ ...smg, color: TEXT_DEEP, opacity: 0.92 }}
-                >
-                  <p className="text-pretty">
+                <div className="mx-auto max-w-xl space-y-3 border-y border-motif-deep/10 px-1 py-5 text-[13px] leading-[1.75] sm:space-y-5 sm:px-0 sm:py-8 sm:text-base sm:leading-[1.8]">
+                  <p className="text-pretty" style={{ ...smg, color: TEXT, fontStyle: "italic" }}>
                     &ldquo;As we enter the next chapter of our lives as husband and wife, we seek
                     the guidance and support of special people who have inspired us through their
                     love, wisdom, and example.&rdquo;
                   </p>
                   <p
-                    className="text-[11px] leading-relaxed tracking-[0.14em] uppercase not-italic sm:text-sm sm:tracking-[0.2em]"
-                    style={{ ...smg, color: TEXT, fontWeight: 600 }}
+                    className="text-[11px] leading-relaxed tracking-[0.14em] uppercase sm:text-sm sm:tracking-[0.2em]"
+                    style={{ ...smg, color: TEXT, fontStyle: "normal" }}
                   >
                     Because you are a role model of love, laughter, and happily ever after, it
                     would be our honor if you would stand with us and witness our love as our:
@@ -656,25 +745,19 @@ export function ProposalPage({ role }: ProposalPageProps) {
                 </div>
 
                 <h2
-                  className="mb-2 text-xl italic sm:text-3xl"
-                  style={{ ...hps, color: ACCENT, fontSize: "clamp(1.75rem, 6vw, 2.75rem)" }}
+                  className="mb-2 text-pretty text-xl leading-snug sm:text-3xl sm:leading-snug"
+                  style={{ ...proposalHonor, color: ACCENT, letterSpacing: "0.01em" }}
                 >
                   We are honored to have you as part of our special day.
                 </h2>
 
-                <p
-                  className="mx-auto max-w-md text-xs leading-relaxed sm:text-sm"
-                  style={{ ...smg, color: TEXT }}
-                >
+                <p className="mx-auto max-w-md text-xs leading-relaxed sm:text-sm" style={{ ...smg, color: TEXT }}>
                   Thank you for accepting our proposal! Please enter the exact name you would like
                   displayed on our wedding invitation and guestlists:
                 </p>
 
                 <div className="mx-auto max-w-md text-left">
-                  <label
-                    className="mb-2 block text-[10px] font-semibold tracking-widest uppercase sm:text-xs"
-                    style={{ ...smg, color: TEXT }}
-                  >
+                  <label className="mb-2 block text-[10px] font-semibold tracking-widest uppercase sm:text-xs" style={{ ...smg, color: TEXT }}>
                     Your Preferred Name <span style={{ color: ACCENT }}>*</span>
                   </label>
                   <input
@@ -683,8 +766,8 @@ export function ProposalPage({ role }: ProposalPageProps) {
                     placeholder="e.g. Aunt Maria Clara / Mr. James Bond"
                     value={preferredName}
                     onChange={(e) => setPreferredName(e.target.value)}
-                    className="w-full rounded-xl border border-motif-medium/30 bg-white/70 px-4 py-2.5 text-xs font-medium transition-all placeholder:text-motif-medium/40 focus:border-motif-accent focus:ring-2 focus:ring-motif-accent/30 focus:outline-none sm:py-3 sm:text-sm"
-                    style={{ ...smg, color: TEXT_DEEP }}
+                    className="w-full rounded-xl border border-motif-deep/20 bg-white/70 px-4 py-2.5 text-xs transition-all placeholder:text-motif-medium/40 focus:border-motif-accent focus:ring-2 focus:ring-motif-accent/30 focus:outline-none sm:py-3 sm:text-sm"
+                    style={{ ...smg, color: TEXT }}
                   />
                   {validationError && (
                     <p className="mt-2 flex items-center gap-1 text-xs font-medium text-rose-500">
@@ -693,11 +776,13 @@ export function ProposalPage({ role }: ProposalPageProps) {
                   )}
                 </div>
 
-                <div
-                  className="mx-auto flex max-w-md flex-col gap-3 border-t pt-4 sm:flex-row"
-                  style={{ borderColor: "color-mix(in srgb, var(--color-motif-accent) 20%, transparent)" }}
-                >
-                  <button type="submit" disabled={submitting} className={`${primaryBtnClass} flex-1`}>
+                <div className="mx-auto flex max-w-md flex-col gap-3 border-t border-motif-deep/10 pt-4 sm:flex-row">
+                  <button
+                    type="submit"
+                    disabled={submitting}
+                    className={`${primaryBtnClass} flex-1`}
+                    style={{ ...smg, backgroundColor: ACCENT }}
+                  >
                     {submitting ? "Saving..." : "Submit Response"}
                   </button>
                   <button
@@ -736,41 +821,33 @@ export function ProposalPage({ role }: ProposalPageProps) {
 
                 <h2
                   className="mb-4 leading-none"
-                  style={{ ...hps, fontSize: "clamp(2rem, 9vw, 3.5rem)", color: ACCENT }}
+                  style={{ ...hps, fontSize: "clamp(2rem, 9vw, 3.5rem)", color: ACCENT, fontWeight: 400, letterSpacing: "0.04em" }}
                 >
                   It&apos;s Official!
                 </h2>
 
-                <div className="mx-auto mb-6 max-w-sm rounded-2xl border border-motif-medium/20 bg-white/65 px-6 py-4 shadow-[0_8px_28px_rgba(42,37,32,0.08)] backdrop-blur-sm">
-                  <span
-                    className="mb-1 block text-[10px] font-semibold tracking-widest uppercase"
-                    style={{ ...smg, color: TEXT }}
-                  >
+                <div className="mx-auto mb-6 max-w-sm rounded-2xl border border-motif-deep/15 bg-white/65 px-6 py-4 shadow-sm backdrop-blur-sm">
+                  <span className="mb-1 block text-[10px] font-semibold tracking-widest uppercase" style={{ ...smg, color: TEXT }}>
                     Registered partner
                   </span>
-                  <p
-                    className="text-lg font-semibold tracking-wide sm:text-xl"
-                    style={{ ...hps, color: ACCENT, fontSize: "clamp(1.5rem, 5vw, 2rem)" }}
-                  >
+                  <p className="text-lg tracking-wide sm:text-xl" style={{ ...hps, color: ACCENT, fontWeight: 400 }}>
                     {preferredName}
                   </p>
-                  <span
-                    className="mt-1.5 block text-xs italic"
-                    style={{ ...smg, color: TEXT }}
-                  >
+                  <span className="mt-1.5 block text-xs italic" style={{ ...smg, color: TEXT }}>
                     for the position of {role.title}
                   </span>
                 </div>
 
-                <p
-                  className="mx-auto mb-10 max-w-md text-sm leading-relaxed"
-                  style={{ ...smg, color: TEXT }}
-                >
+                <p className="mx-auto mb-10 max-w-md text-sm leading-relaxed" style={{ ...smg, color: TEXT }}>
                   Thank you so much. Having you stand with us fills our hearts with endless joy
                   and confidence. We can&apos;t wait to celebrate together on our wedding day!
                 </p>
 
-                <Link href="/" className={`${primaryBtnClass} inline-block w-full max-w-sm`}>
+                <Link
+                  href="/"
+                  className={`${primaryBtnClass} inline-block w-full max-w-sm`}
+                  style={{ ...smg, backgroundColor: ACCENT }}
+                >
                   Return to Wedding Page
                 </Link>
               </div>
@@ -793,29 +870,27 @@ export function ProposalPage({ role }: ProposalPageProps) {
                 </div>
 
                 <h2
-                  className="mb-4 text-2xl tracking-[0.12em] uppercase sm:text-3xl"
-                  style={{ ...smg, color: TEXT_DEEP, fontWeight: 600 }}
+                  className="mb-4 text-2xl tracking-[0.12em] uppercase"
+                  style={{ ...smg, color: TEXT, fontWeight: 600 }}
                 >
                   Thank You for Responding
                 </h2>
 
                 <p
-                  className="mx-auto mb-10 max-w-lg text-sm leading-relaxed italic sm:text-base"
-                  style={{ ...smg, color: TEXT }}
+                  className="mx-auto mb-10 max-w-lg text-sm leading-relaxed sm:text-base"
+                  style={{ ...smg, color: TEXT, fontStyle: "italic" }}
                 >
                   &ldquo;Thank you for taking the time to respond. While we&apos;re saddened that
                   you won&apos;t be able to join us in this role, we truly appreciate your support
                   and well wishes as we begin this new chapter together.&rdquo;
                 </p>
 
-                <div
-                  className="mx-auto flex max-w-xs flex-col gap-3 border-t pt-4 sm:max-w-md sm:flex-row"
-                  style={{ borderColor: "color-mix(in srgb, var(--color-motif-accent) 20%, transparent)" }}
-                >
+                <div className="mx-auto flex max-w-xs flex-col gap-3 border-t border-motif-deep/10 pt-4 sm:max-w-md sm:flex-row">
                   <button
                     onClick={handleNoSubmit}
                     disabled={submitting}
-                    className="flex-1 cursor-pointer rounded-full border border-rose-500 bg-rose-500 px-8 py-4 text-[11px] font-bold tracking-[0.18em] text-white uppercase shadow-md transition-all duration-300 hover:border-rose-600 hover:bg-rose-600 disabled:opacity-50"
+                    className="flex-1 cursor-pointer rounded-lg border border-rose-500 bg-rose-500 px-8 py-4 text-[11px] font-semibold tracking-[0.18em] text-white uppercase shadow-md transition-all duration-300 hover:border-rose-600 hover:bg-rose-600 disabled:opacity-50"
+                    style={{ ...smg }}
                   >
                     {submitting ? "Sending..." : "Send Response"}
                   </button>
@@ -847,25 +922,18 @@ export function ProposalPage({ role }: ProposalPageProps) {
 
                 <h2
                   className="mb-4 leading-none"
-                  style={{ ...hps, fontSize: "clamp(1.75rem, 7vw, 2.75rem)", color: ACCENT }}
+                  style={{ ...hps, fontSize: "clamp(1.75rem, 7vw, 2.75rem)", color: ACCENT, fontWeight: 400, letterSpacing: "0.04em" }}
                 >
                   Response Sent Successfully
                 </h2>
 
-                <p
-                  className="mx-auto mb-8 max-w-md text-sm leading-relaxed"
-                  style={{ ...smg, color: TEXT }}
-                >
+                <p className="mx-auto mb-8 max-w-md text-sm leading-relaxed" style={{ ...smg, color: TEXT }}>
                   We have received your response. Your love, support, and well wishes mean the
                   world to us regardless. We look forward to celebrating other special milestones
                   with you in the future!
                 </p>
 
-                <Link
-                  href="/"
-                  className={secondaryBtnClass}
-                  style={{ ...smg, color: TEXT }}
-                >
+                <Link href="/" className={secondaryBtnClass} style={{ ...smg, color: TEXT }}>
                   Return to Wedding Page
                 </Link>
               </div>
@@ -876,7 +944,7 @@ export function ProposalPage({ role }: ProposalPageProps) {
 
       <style jsx>{`
         .proposal-base {
-          background: ${HERO_BACKGROUND};
+          background: ${PROPOSAL_BACKGROUND};
         }
 
         .proposal-wash {
