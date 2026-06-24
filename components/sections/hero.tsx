@@ -47,6 +47,10 @@ const hps: CSSProperties = {
   fontFamily: "'HelloParisSans', serif",
 }
 
+const coupleNameFont: React.CSSProperties = {
+  fontFamily: 'var(--font-cheque), serif',
+};
+
 interface AmbientOrb {
   id: number
   x: number
@@ -342,6 +346,7 @@ export function Hero({ visible = false }: HeroProps) {
               fontWeight: 400,
               letterSpacing: "0.04em",
               textTransform: "capitalize",
+              ...coupleNameFont,
             }}
           >
             {groomNickname}
@@ -371,6 +376,7 @@ export function Hero({ visible = false }: HeroProps) {
               fontWeight: 400,
               letterSpacing: "0.04em",
               textTransform: "capitalize",
+              ...coupleNameFont,
             }}
           >
             {brideNickname}

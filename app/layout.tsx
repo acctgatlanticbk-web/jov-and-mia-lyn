@@ -83,6 +83,12 @@ const playlistScript = localFont({
   display: "swap",
 })
 
+const cheque = localFont({
+  src: "../Font/Cheque-Regular.otf",
+  variable: "--font-cheque",
+  display: "swap",
+})
+
 export const metadata: Metadata = {
   metadataBase: new URL(canonicalUrl),
   title: {
@@ -209,7 +215,7 @@ export default function RootLayout({
         <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
       </head>
       <body
-        className={`${inter.variable} ${greatVibes.variable} ${imperialScript.variable} ${cinzel.variable} ${brittany.variable} ${playlistScript.variable} font-inter antialiased text-foreground`}
+        className={`${inter.variable} ${greatVibes.variable} ${imperialScript.variable} ${cinzel.variable} ${brittany.variable} ${playlistScript.variable} ${cheque.variable} font-inter antialiased text-foreground`}
       >
         <ClientLayout>
           {children}

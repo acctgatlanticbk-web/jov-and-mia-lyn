@@ -80,35 +80,18 @@ export function Welcome() {
               className={`${cormorant.className} space-y-3 text-sm leading-relaxed sm:space-y-4 sm:text-base sm:leading-7 md:space-y-5 md:text-lg md:leading-8`}
               style={{ color: palette.body }}
             >
-              <p>
-                With hearts full of gratitude and joy, we invite you to share in one of the most
-                sacred and meaningful days of our lives.
-              </p>
-              <p>
-                Our love has been guided by faith, strengthened through every season, and beautifully
-                affirmed by those who have sincerely celebrated our happiness from the very beginning.
-                To the ones who prayed for us, believed in us, and rejoiced in our union with genuine
-                hearts — we thank you. Your unwavering support has meant more than words can express.
-              </p>
-              <p>
-                You are not simply guests at our wedding; you are part of the foundation upon which
-                this new chapter is built.
-              </p>
-              <p>
-                As we stand before God and our loved ones to begin our life together, we do so
-                surrounded by those who truly cherish our joy. Every detail of this day has been
-                prepared with love, and we look forward to celebrating this blessed moment with you.
-              </p>
-              <p>Kindly explore this invitation for event details and RSVP information.</p>
+              With joyful hearts, we invite you to celebrate this beautiful beginning with us.
+Together with our families, we welcome you to share in our wedding day.
+Please continue below for our letter to our loved ones, event details, and RSVP information.
 
               <div className="space-y-5 pt-3 sm:space-y-6 sm:pt-4 md:space-y-7 md:pt-5">
-                <div className="flex items-center justify-center gap-2">
+                {/* <div className="flex items-center justify-center gap-2">
                   <span className="h-px w-10 bg-motif-silver sm:w-16 md:w-20" />
                   <span className="h-1.5 w-1.5 rounded-full bg-motif-accent" />
                   <span className="h-px w-10 bg-motif-silver sm:w-16 md:w-20" />
-                </div>
+                </div> */}
 
-                <div className="mx-auto max-w-md rounded-xl border border-motif-silver/60 bg-white/80 px-4 py-4 sm:rounded-2xl sm:px-6 sm:py-5">
+                {/* <div className="mx-auto max-w-md rounded-xl border border-motif-silver/60 bg-white/80 px-4 py-4 sm:rounded-2xl sm:px-6 sm:py-5">
                   <p
                     className={`${cormorant.className} mb-2 text-xs uppercase tracking-[0.22em] sm:mb-2.5 sm:text-sm sm:tracking-[0.26em]`}
                     style={{ color: palette.medium }}
@@ -128,21 +111,21 @@ export function Welcome() {
                   >
                     {siteConfig.snapShare.hashtag.join(" ")}
                   </p>
-                </div>
+                </div> */}
 
                 <div className="space-y-1.5 pt-1 sm:space-y-2">
-                  <p
+                  {/* <p
                     className={`${cormorant.className} text-sm italic sm:text-base md:text-lg`}
                     style={{ color: palette.medium }}
                   >
                     With all our love,
-                  </p>
-                  <p
+                  </p> */}
+                  {/* <p
                     className={`${cinzel.className} text-xl tracking-[0.1em] sm:text-2xl sm:tracking-[0.14em] md:text-3xl`}
                     style={{ color: palette.deep }}
                   >
                     {groomName} &amp; {brideName}
-                  </p>
+                  </p> */}
                 </div>
               </div>
             </div>

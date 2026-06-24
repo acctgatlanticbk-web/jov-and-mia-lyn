@@ -290,7 +290,7 @@ export function Entourage() {
   const NameItem = ({
     member,
     align = "center",
-    showRole = true,
+    showRole = false,
   }: {
     member: EntourageMember
     align?: "left" | "center" | "right"
@@ -721,7 +721,7 @@ export function Entourage() {
                             <div className="w-full max-w-md h-px" style={{ background: 'linear-gradient(to right, transparent, color-mix(in srgb, var(--color-motif-medium) 31%, transparent), transparent)' }}></div>
                           </div>
                         )}
-                        <TwoColumnLayout leftTitle="Best Men" rightTitle="Maid & Matron">
+                        <TwoColumnLayout leftTitle="Best Men" rightTitle="Matron of Honor ">
                           {(() => {
                             const maxLen = Math.max(bestMan.length, maidOfHonor.length)
                             const rows = []

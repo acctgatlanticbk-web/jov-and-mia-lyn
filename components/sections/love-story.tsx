@@ -31,97 +31,92 @@ export function LoveStory() {
         <h1
            className="leading-none"
            style={{
-             ...coupleFont,
+            fontFamily: "var(--font-cheque), cursive",
              fontSize: "clamp(2.15rem, 9vw, 4.75rem)",
-             color: 'var(--color-motif-medium)',
+             color: 'var(--color-motif-deep)',
              letterSpacing: "0.04em",
            }}
           >
-          Our Love Story
+          A Letter to Our Loved Ones
           </h1>
 
         <p
-          className="text-sm sm:text-lg md:text-xl lg:text-2xl xl:text-3xl tracking-[0.14em] sm:tracking-[0.18em] font-normal leading-snug mb-1 text-black"
+          className="text-sm sm:text-lg md:text-xl lg:text-2xl xl:text-3xl tracking-[0.14em] sm:tracking-[0.18em] font-normal leading-snug mb-1 text-black max-w-4xl mx-auto mt-4"
           style={bodyFont}
         >
-        “11 Years of Love, Now Forever”
+        With full hearts, we invite you to share in one of the most beautiful and meaningful moments of our lives.
         </p>
       </div>
 
-      {/* SECTION 1: Top - Dark */}
       <StorySection
         theme="light"
         layout="image-left"
         isFirst={true}
-        title="From Friends to Lovers"
         imageSrc="/mobile-background/couple (2).webp"
         text={
           <>
-            <p className="mb-4">
-            We first met at PLV during our first year in college as Biological Science students. As classmates, we shared classes, projects, and countless memories, and without realizing it, our story had already begun.
+            <p>
+            Our love story has not always been simple, but it has always been real. It has been built through years of friendship, patience, prayers, tears, forgiveness, and choosing each other again and again. As two women who found love in one another, we know that our journey may not be understood by everyone in the same way. But in our hearts, we believe that a love that is honest, faithful, kind, and pure is never something to be ashamed of; it is something to be grateful for.
             </p>
-           
           </>
         }
       />
 
-      {/* SECTION 2: Middle - Light */}
       <StorySection
         theme="dark"
         layout="image-right"
-        imageSrc="/mobile-background/couple (1).webp"
-        // title="Became a Couple (2019)"
+        imageSrc="/mobile-background/couple (9).webp"
         text={
           <>
             <p>
-            Although life eventually took us on different paths, fate brought us back together in 2014. What started as friendship blossomed into love, and on April 27, 2015, we officially began our journey as boyfriend and girlfriend. ❤️
+            We trust in God&apos;s love. A love that does not turn away. A love that listens, heals, forgives, and embraces. A love that teaches us not to judge, but to understand; not to hate, but to show kindness; not to close our hearts, but to make room for grace.
             </p>
           </>
         }
       />
 
-      {/* SECTION 3: Bottom - Dark */}
       <StorySection
         theme="light"
         layout="image-left"
-        isLast={true}
         imageSrc="/mobile-background/couple (3).webp"
-        // title="The Proposal (2025)"
         text={
           <>
             <p>
-            Over the past 11 years, we have faced distance, challenges, and sacrifices, but each experience only strengthened our love, trust, and commitment to one another.
-            </p>
-           
-          </>
-        }
-      />
-            {/* SECTION 4: Middle - Light */}
-            <StorySection
-        theme="dark"
-        layout="image-right"
-        imageSrc="/mobile-background/couple (4).webp"
-        // title="Became a Couple (2019)"
-        text={
-          <>
-            <p>
-            And now, after 11 wonderful years together, we are excited to begin our greatest adventure yet. We can't wait to celebrate this special day and the start of our forever with all of you. 
+            As we begin this new chapter together, we carry with us the hope that our union will be surrounded not by judgment, but by love. Not by fear, but by faith. Not by doubt, but by the quiet belief that God sees our hearts and knows the sincerity of our love.
             </p>
           </>
         }
       />
 
-      {/* SECTION 5: Bottom - Dark */}
+      <StorySection
+        theme="dark"
+        layout="image-right"
+        imageSrc="/mobile-background/couple (13).webp"
+        text={
+          <>
+            <p>
+            To our families and friends, thank you for walking with us in your own way. Thank you for the love you have given, the prayers you have whispered, the forgiveness you have offered, and the moments you have shared with us. Your presence means more than words can ever express.
+            </p>
+          </>
+        }
+      />
+
       <StorySection
         theme="light"
         layout="image-left"
         isLast={true}
-        imageSrc="/mobile-background/couple (5).webp"
-        // title="The Proposal (2025)"
+        imageSrc="/mobile-background/couple (8).webp"
         text={
           <>
+            <p className="mb-4">
+            On this day, we do not only celebrate a wedding. We celebrate love that endured, faith that remained, and grace that carried us here.
+            </p>
+            <p className="mb-4">
+            As we say yes to forever, we humbly ask for your blessings, your prayers, and your open hearts as we continue our journey together with God&apos;s love as our guide, forgiveness as our strength, and love as our promise.
+            </p>
             <p>
-            Together with our families, we invite you to witness as we say, "I do".
+            With all our love and gratitude,<br />
+            Jov &amp; Mia
             </p>
           </>
         }

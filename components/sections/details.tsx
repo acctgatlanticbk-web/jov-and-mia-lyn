@@ -1,7 +1,7 @@
 "use client"
 
 import { Section } from "@/components/section"
-import { useState, useEffect, type ReactNode } from "react"
+import { useState, useEffect, useMemo, type ReactNode } from "react"
 import { QRCodeSVG } from "qrcode.react"
 import { useSiteConfig } from "@/hooks/use-site-config"
 import Image from "next/image"
@@ -67,25 +67,25 @@ const ct = {
 
 const attireGuide = {
   principalSponsors: {
-    image: "/attireGuide/principal-sponsors.png",
+    image: "/attireGuide/principalSponsors-new.png",
     ladies: ["#EDD7B3", "#DCA449", "#EDCCA3"],
     gentlemen: ["#F4D6A6", "#ECC99A", "#F9EBD7"],
   },
   secondarySponsors: {
-    image: "/attireGuide/secondary-sponsors.png",
+    image: "/attireGuide/secondarySponsors-new.png",
     ladies: ["#F8AFAE", "#FCA77F", "#FC776A"],
     gentlemen: ["#E0AC7D", "#D6C4B5", "#EFD0AB"],
   },
   groomsmen: {
-    image: "/attireGuide/groomsmen.png",
+    image: "/attireGuide/groomsmen-new.png",
     colors: ["#BDBF86", "#979430", "#909E79"],
   },
   bridesmaids: {
-    image: "/attireGuide/bridesmaids.png",
+    image: "/attireGuide/bridesmaids-new.png",
     colors: ["#FBAFB5", "#F95483", "#FB6A67", "#FC7406", "#FCB484", "#FDD461", "#D0B2D2"],
   },
   flowerGirlsRingBearers: {
-    image: "/attireGuide/flower-girl-and-ring-bearer.png",
+    image: "/attireGuide/flowerGirlsRingBearers-new.png",
     flowerGirls: ["#F8ECDA", "#F4DCBB"],
     ringBearers: ["#F4DBB4", "#EFC796"],
   },
@@ -136,15 +136,130 @@ function AttirePaletteSection({ colors }: { colors: readonly string[] }) {
   return <ColorPalette colors={colors} />
 }
 
+interface AttireParticle {
+  id: number
+  x: number
+  y: number
+  size: number
+  color: string
+  opacity: number
+  duration: number
+  delay: number
+  driftX: number
+  driftY: number
+  twinkleDuration?: number
+}
+
+function buildAttirePalette(colors: readonly string[]) {
+  return [
+    ...colors,
+    "var(--color-motif-cream)",
+    "var(--color-motif-silver)",
+    "var(--color-motif-yellow)",
+  ]
+}
+
+function createAttireOrbs(count: number, palette: string[]): AttireParticle[] {
+  return Array.from({ length: count }, (_, id) => ({
+    id,
+    x: 6 + Math.random() * 88,
+    y: 8 + Math.random() * 84,
+    size: 48 + Math.random() * 72,
+    color: palette[Math.floor(Math.random() * palette.length)],
+    opacity: 0.14 + Math.random() * 0.16,
+    duration: 12 + Math.random() * 10,
+    delay: Math.random() * 5,
+    driftX: -18 + Math.random() * 36,
+    driftY: -16 + Math.random() * 32,
+  }))
+}
+
+function createAttireSparks(count: number, palette: string[]): AttireParticle[] {
+  return Array.from({ length: count }, (_, id) => ({
+    id,
+    x: Math.random() * 100,
+    y: Math.random() * 100,
+    size: 2 + Math.random() * 4.5,
+    color: palette[Math.floor(Math.random() * palette.length)],
+    opacity: 0.35 + Math.random() * 0.35,
+    duration: 8 + Math.random() * 12,
+    delay: Math.random() * 8,
+    driftX: -14 + Math.random() * 28,
+    driftY: -16 + Math.random() * 32,
+    twinkleDuration: 2.5 + Math.random() * 3,
+  }))
+}
+
+function AttireImageParticles({ colors }: { colors: readonly string[] }) {
+  const palette = useMemo(() => buildAttirePalette(colors), [colors])
+  const ambientOrbs = useMemo(() => createAttireOrbs(5, palette), [palette])
+  const sparkParticles = useMemo(() => createAttireSparks(22, palette), [palette])
+
+  const gradientStyle = {
+    background: `
+      radial-gradient(circle at 12% 20%, color-mix(in srgb, ${colors[0]} 42%, transparent) 0%, transparent 44%),
+      radial-gradient(circle at 88% 16%, color-mix(in srgb, ${colors[1] ?? colors[0]} 38%, transparent) 0%, transparent 42%),
+      radial-gradient(circle at 76% 84%, color-mix(in srgb, ${colors[2] ?? colors[0]} 36%, transparent) 0%, transparent 44%),
+      radial-gradient(circle at 18% 78%, color-mix(in srgb, ${colors[colors.length - 1]} 34%, transparent) 0%, transparent 40%),
+      radial-gradient(circle at 50% 50%, color-mix(in srgb, var(--color-motif-cream) 55%, transparent) 0%, transparent 58%)
+    `,
+  } as const
+
+  return (
+    <div className="attire-particle-field pointer-events-none absolute inset-0 z-0 overflow-hidden" aria-hidden>
+      <div className="attire-particle-gradient" style={gradientStyle} />
+      {ambientOrbs.map((orb) => (
+        <span
+          key={`attire-orb-${orb.id}`}
+          className="attire-particle-orb"
+          style={{
+            left: `${orb.x}%`,
+            top: `${orb.y}%`,
+            width: orb.size,
+            height: orb.size,
+            backgroundColor: orb.color,
+            opacity: orb.opacity,
+            animationDuration: `${orb.duration}s`,
+            animationDelay: `${orb.delay}s`,
+            ["--drift-x" as string]: `${orb.driftX}px`,
+            ["--drift-y" as string]: `${orb.driftY}px`,
+          }}
+        />
+      ))}
+      {sparkParticles.map((particle) => (
+        <span
+          key={`attire-spark-${particle.id}`}
+          className="attire-particle-spark"
+          style={{
+            left: `${particle.x}%`,
+            top: `${particle.y}%`,
+            width: particle.size,
+            height: particle.size,
+            backgroundColor: particle.color,
+            color: particle.color,
+            opacity: particle.opacity,
+            animationDuration: `${particle.duration}s, ${particle.twinkleDuration}s`,
+            animationDelay: `${particle.delay}s, ${particle.delay * 0.4}s`,
+            ["--drift-x" as string]: `${particle.driftX}px`,
+            ["--drift-y" as string]: `${particle.driftY}px`,
+          }}
+        />
+      ))}
+    </div>
+  )
+}
+
 function AttireCard({
   title,
   image,
   alt,
+  particleColors,
   children,
 }: {
   title: string
   image: string
   alt: string
+  particleColors: readonly string[]
   children: ReactNode
 }) {
   return (
@@ -152,15 +267,16 @@ function AttireCard({
       <div className="absolute -inset-1 rounded-2xl bg-gradient-to-br from-motif-silver/25 via-motif-accent/5 to-transparent opacity-0 blur-lg transition-opacity duration-500 group-hover:opacity-100" />
       <div className="relative overflow-hidden rounded-xl border border-motif-deep/20 bg-motif-cream shadow-[0_16px_40px_rgba(0,0,0,0.14)] transition-all duration-300 hover:border-motif-deep/50 hover:shadow-[0_20px_48px_rgba(0,0,0,0.2)] sm:rounded-2xl">
 
-        <div className="relative w-full aspect-[2176/1741] bg-[#FFF7F6]">
+        <div className="relative w-full aspect-[2176/1741] overflow-hidden bg-motif-cream">
+          <AttireImageParticles colors={particleColors} />
           <Image
             src={image}
             alt={alt}
             fill
-            className="object-cover object-center transition-transform duration-700 group-hover:scale-[1.02]"
+            className="relative z-[1] object-cover object-center transition-transform duration-700 group-hover:scale-[1.02]"
             sizes="(max-width: 1024px) 100vw, 1024px"
           />
-          <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-[#2a2520]/72 via-[#2a2520]/35 to-transparent px-5 pb-5 pt-16 sm:px-8 sm:pb-6 sm:pt-20">
+          <div className="absolute inset-x-0 bottom-0 z-[2] bg-gradient-to-t from-[#2a2520]/72 via-[#2a2520]/35 to-transparent px-5 pb-5 pt-16 sm:px-8 sm:pb-6 sm:pt-20">
             <div className="mx-auto flex max-w-lg flex-col items-center gap-2">
               <div className="h-px w-12 bg-white/40 sm:w-16" />
               <h4
@@ -545,6 +661,10 @@ export function Details() {
             title="Principal Sponsors"
             image={attireGuide.principalSponsors.image}
             alt="Principal sponsor attire"
+            particleColors={[
+              ...attireGuide.principalSponsors.ladies,
+              ...attireGuide.principalSponsors.gentlemen,
+            ]}
           >
             <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 sm:gap-6">
               <AttirePaletteGroup label="Ladies" colors={attireGuide.principalSponsors.ladies} />
@@ -556,6 +676,10 @@ export function Details() {
             title="Secondary Sponsors"
             image={attireGuide.secondarySponsors.image}
             alt="Secondary sponsor attire"
+            particleColors={[
+              ...attireGuide.secondarySponsors.ladies,
+              ...attireGuide.secondarySponsors.gentlemen,
+            ]}
           >
             <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 sm:gap-6">
               <AttirePaletteGroup label="Ladies" colors={attireGuide.secondarySponsors.ladies} />
@@ -567,6 +691,7 @@ export function Details() {
             title="Groomsmen"
             image={attireGuide.groomsmen.image}
             alt="Groomsmen attire"
+            particleColors={attireGuide.groomsmen.colors}
           >
             <AttirePaletteSection colors={attireGuide.groomsmen.colors} />
           </AttireCard>
@@ -575,6 +700,7 @@ export function Details() {
             title="Bridesmaids"
             image={attireGuide.bridesmaids.image}
             alt="Bridesmaids attire"
+            particleColors={attireGuide.bridesmaids.colors}
           >
             <AttirePaletteSection colors={attireGuide.bridesmaids.colors} />
           </AttireCard>
@@ -583,6 +709,10 @@ export function Details() {
             title="Flower Girls / Ring Bearers"
             image={attireGuide.flowerGirlsRingBearers.image}
             alt="Flower girls and ring bearers attire"
+            particleColors={[
+              ...attireGuide.flowerGirlsRingBearers.flowerGirls,
+              ...attireGuide.flowerGirlsRingBearers.ringBearers,
+            ]}
           >
             <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 sm:gap-6">
               <AttirePaletteGroup label="Flower Girls" colors={attireGuide.flowerGirlsRingBearers.flowerGirls} />
@@ -913,6 +1043,75 @@ export function Details() {
       )}
      
       </div>
+
+      <style jsx global>{`
+        .attire-particle-gradient {
+          position: absolute;
+          inset: -18%;
+          animation: attireGradientBreath 18s ease-in-out infinite alternate;
+        }
+
+        .attire-particle-orb,
+        .attire-particle-spark {
+          position: absolute;
+          border-radius: 9999px;
+          will-change: transform, opacity;
+          animation-name: attireParticleDrift;
+          animation-timing-function: ease-in-out;
+          animation-iteration-count: infinite;
+          animation-direction: alternate;
+        }
+
+        .attire-particle-orb {
+          filter: blur(28px);
+          transform: translate3d(-50%, -50%, 0);
+        }
+
+        .attire-particle-spark {
+          transform: translate3d(-50%, -50%, 0);
+          box-shadow: 0 0 8px color-mix(in srgb, currentColor 55%, transparent);
+          animation-name: attireParticleDrift, attireParticleTwinkle;
+        }
+
+        @keyframes attireGradientBreath {
+          0% {
+            transform: scale(1) translate3d(0, 0, 0);
+          }
+          100% {
+            transform: scale(1.08) translate3d(0, -1.5%, 0);
+          }
+        }
+
+        @keyframes attireParticleTwinkle {
+          0%, 100% {
+            opacity: 0.25;
+          }
+          50% {
+            opacity: 0.75;
+          }
+        }
+
+        @keyframes attireParticleDrift {
+          0% {
+            transform: translate3d(calc(-50% + 0px), calc(-50% + 0px), 0);
+          }
+          100% {
+            transform: translate3d(
+              calc(-50% + var(--drift-x, 14px)),
+              calc(-50% + var(--drift-y, -20px)),
+              0
+            );
+          }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+          .attire-particle-gradient,
+          .attire-particle-orb,
+          .attire-particle-spark {
+            animation: none !important;
+          }
+        }
+      `}</style>
     </Section>
   )
 }

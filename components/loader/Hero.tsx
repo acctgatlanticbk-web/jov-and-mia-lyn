@@ -49,7 +49,7 @@ const mobileImages: string[] = [
 '/mobile-background/couple (2).webp',
 '/mobile-background/couple (3).webp',
 '/mobile-background/couple (4).webp',
-'/mobile-background/couple (5).webp',
+'/mobile-background/couple (6).webp',
 ];
 
 export const Hero: React.FC<HeroProps> = ({ onOpen, visible }) => {

@@ -106,7 +106,6 @@ export default function Home() {
               <FAQ />
               {/* <Registry /> */}
               <SnapShare />
-
               <Footer />
             </div>
           </div>

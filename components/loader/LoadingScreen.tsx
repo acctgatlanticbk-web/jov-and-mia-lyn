@@ -56,6 +56,9 @@ const smg: React.CSSProperties = {
 const hps: React.CSSProperties = {
   fontFamily: "'HelloParisSans', serif",
 };
+const coupleNameFont: React.CSSProperties = {
+  fontFamily: 'var(--font-cheque), serif',
+};
 
 function parseCeremonyDate(dateStr: string) {
   const match = dateStr.match(/(\w+)\s+(\d{1,2}),\s+(\d{4})/);
@@ -325,7 +328,7 @@ export const LoadingScreen: React.FC<LoadingScreenProps> = ({ onComplete }) => {
           <h1
             className="w-full leading-none"
             style={{
-              ...hps,
+              ...coupleNameFont,
               fontSize: 'clamp(52px, 14vw, 72px)',
               color: ACCENT,
               fontWeight: 400,
@@ -354,7 +357,7 @@ export const LoadingScreen: React.FC<LoadingScreenProps> = ({ onComplete }) => {
           <h1
             className="w-full leading-none"
             style={{
-              ...hps,
+              ...coupleNameFont,
               fontSize: 'clamp(52px, 14vw, 72px)',
               color: ACCENT,
               fontWeight: 400,
