@@ -569,7 +569,7 @@ export function Entourage() {
                             <div className="w-full max-w-md h-px" style={{ background: 'linear-gradient(to right, transparent, color-mix(in srgb, var(--color-motif-medium) 31%, transparent), transparent)' }}></div>
                           </div>
                         )}
-                        <TwoColumnLayout leftTitle="Groom’s Parents" rightTitle="Bride’s Parents">
+                        <TwoColumnLayout leftTitle="Groom’s Presentator" rightTitle="Bride’s Presentator">
                           {(() => {
                             const leftArr = sortParents(parentsGroom)
                             const rightArr = sortParents(parentsBride)
